@@ -1,0 +1,4 @@
+venv_tron/
+.env
+__pycache__/
+.idea/
