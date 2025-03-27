@@ -1,5 +1,5 @@
 import dataclasses
-import pathlib
+import os
 
 from sqlalchemy import create_engine, orm, Table, Column, Integer, String, DateTime, func
 from sqlalchemy.exc import IntegrityError
@@ -7,8 +7,13 @@ from sqlalchemy.exc import IntegrityError
 from src.domain import AddressBank
 
 
-db_path = pathlib.Path(__file__).parent.parent / "db/zuzu.db"
-engine = create_engine(f"sqlite:///{db_path}")
+POSTGRES_DSN = f"postgresql://{os.getenv('POSTGRES_USER')}:"\
+               f"{os.getenv('POSTGRES_PASSWORD')}@"\
+               f"{os.getenv('POSTGRES_HOST', 'localhost')}:"\
+               f"{os.getenv('POSTGRES_PORT')}/"\
+               f"{os.getenv('POSTGRES_DB')}"
+
+engine = create_engine(POSTGRES_DSN)
 session_maker = orm.sessionmaker(bind=engine)
 table_mapper = orm.registry()
 
