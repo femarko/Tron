@@ -2,7 +2,7 @@ import tronpy
 import pytest
 from fastapi.testclient import TestClient
 
-from src import main
+from src import exper_1
 
 wallet_address = tronpy.Wallet().address
 
