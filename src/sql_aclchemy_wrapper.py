@@ -18,7 +18,7 @@ address_bank_table = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("address", String(200), index=True, nullable=False),
     Column("balance", String(200), index=True, nullable=False),
-    Column("energy", String(200), index=True, nullable=False),
+    Column("available_ energy", String(200), index=True, nullable=False),
     Column("create_time", DateTime, nullable=False),
     Column("save_date", DateTime, server_default=func.now(), nullable=False)
 )

@@ -2,12 +2,18 @@ import datetime
 from typing import Optional
 
 import tronpy
-from pydantic.v1 import Protocol
+
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 client = tronpy.Tron(network="nile")
 wallet = client.generate_address()
 # client.create_account(wallet["base58check_address"])
-# info = client.get_account(wallet["base58check_address"])
+info = client.get_account(addr=os.getenv("ADDRESS"))
+resources = client.get_account_resource(addr=os.getenv("ADDRESS"))
 
 bal = client.get_account_balance(addr=str(wallet["base58check_address"]))
 pass
@@ -18,7 +24,7 @@ class AddressBank:
             self,
             address,
             balance,
-            energy_window_size,
+            available_energy,
             create_time,
             id: Optional[int] = None,
             save_date: Optional[datetime] = None
@@ -26,7 +32,7 @@ class AddressBank:
         self.id = id
         self.address = address
         self.balance = balance
-        self.energy_window_size = energy_window_size
+        self.available_energy = available_energy
         self.create_time = create_time
         self.save_date = save_date
 
