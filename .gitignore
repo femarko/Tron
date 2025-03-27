@@ -3,3 +3,5 @@ venv_tron/
 __pycache__/
 .idea/
 task.txt
+exper.py
+exper_1.py
