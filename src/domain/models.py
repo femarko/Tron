@@ -20,5 +20,5 @@ class AddressBank:
         self.save_date = save_date
 
 
-def save_address_info(**data) -> AddressBank:
+def create_addrbank_entry(**data) -> AddressBank:
     return AddressBank(**data)

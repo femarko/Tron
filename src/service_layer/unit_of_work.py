@@ -1,7 +1,7 @@
-import src.sql_aclchemy_wrapper
-from src.sql_aclchemy_wrapper import orm_conf
+import src.orm_tool.sql_aclchemy_wrapper
+from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 
-import src.errors
+import src.domain.errors
 from src.repository import AddressRepository, RepoProto
 
 
@@ -27,4 +27,4 @@ class UnitOfWork:
         try:
             self.session.commit()
         except orm_conf.integrity_error:
-            raise src.errors.AlreadyExistsError
+            raise src.domain.errors.AlreadyExistsError
