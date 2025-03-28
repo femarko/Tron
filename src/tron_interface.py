@@ -1,3 +1,4 @@
+from decimal import Decimal
 from enum import Enum
 import tronpy
 
@@ -21,6 +22,5 @@ class TronClient:
         )
         return {"energy": energy, "bandwidth": bandwidth}
 
-    def get_balance(self, addr: str) -> int:
-        account_info = self.client.get_account_balance(addr=addr)
-        return account_info.get("balance", 0)
+    def get_balance(self, addr: str) -> Decimal:
+        return self.client.get_account_balance(addr=addr)
