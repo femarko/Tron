@@ -2,6 +2,10 @@ import os
 import tronpy
 
 
+def get_tron_addr_energy(network: str, addr: str) -> dict[str, str]:
+
+    return blch_interface.get_account_resource(addr=addr)
+
 def get_address_info(blch_interface, addr: str) -> dict[str, str]:
     return blch_interface.get_account(addr=addr)
 
