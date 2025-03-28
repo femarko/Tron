@@ -1,22 +1,15 @@
-import os
-import tronpy
+from decimal import Decimal
+
+import src.tron_interface as tr
 
 
-def get_tron_addr_energy(network: str, addr: str) -> dict[str, str]:
+def get_energy_and_bandwidth(addr: str, network: tr.Optional[tr.TronNetwork]) -> dict[str, int]:
+    tron_client = tr.create_tron_client(network=network)
+    return tron_client.get_energy_and_bandwidth(addr=addr)
 
-    return blch_interface.get_account_resource(addr=addr)
+def get_balance(addr: str, network: tr.Optional[tr.TronNetwork]) -> Decimal:
+    tron_client = tr.create_tron_client(network=network)
+    return tron_client.get_balance(addr=addr)
 
-def get_address_info(blch_interface, addr: str) -> dict[str, str]:
-    return blch_interface.get_account(addr=addr)
-
-
-def get_energy(blch_interface, addr: str) -> dict[str, str]:
-    resources = blch_interface.get_account_resource(addr=os.getenv("ADDRESS"))
-
-    blch_interface.get_account_resource(addr=addr)
-
-
-client = tronpy.Tron(network="nile")
-wallet = client.generate_address()
-info = client.get_account(addr=os.getenv("ADDRESS"))
-bal = client.get_account_balance(addr=str(wallet["base58check_address"]))
+def save_address_info(**data) -> None:
+    pass
