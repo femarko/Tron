@@ -1,11 +1,14 @@
 import dataclasses
 import os
+import dotenv
 
-from sqlalchemy import create_engine, orm, Table, Column, Integer, String, DateTime, func
+from sqlalchemy import create_engine, orm, Table, Column, Integer, String, DECIMAL,DateTime, func
 from sqlalchemy.exc import IntegrityError
 
-from src.domain import AddressBank
+from src.domain.models import AddressBank
 
+
+dotenv.load_dotenv()
 
 POSTGRES_DSN = f"postgresql://{os.getenv('POSTGRES_USER')}:"\
                f"{os.getenv('POSTGRES_PASSWORD')}@"\
@@ -22,7 +25,7 @@ address_bank_table = Table(
     table_mapper.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("address", String(200), index=True, nullable=False),
-    Column("balance", String(200), index=True, nullable=False),
+    Column("balance", DECIMAL, index=True, nullable=False),
     Column("available_ energy", String(200), index=True, nullable=False),
     Column("create_time", DateTime, nullable=False),
     Column("save_date", DateTime, server_default=func.now(), nullable=False)
