@@ -13,7 +13,7 @@ def get_balance(addr: str, network: tr.Optional[tr.TronNetwork]) -> Decimal:
     tron_client = tr.create_tron_client(network=network)
     return tron_client.get_balance(addr=addr)
 
-def save_address_info(data: dict[str, int], uow: UnitOfWork) -> int:
+def save_address_info(data: dict[str, str | int | Decimal], uow: UnitOfWork) -> int:
     entry = models.create_addrbank_entry(**data)
     with uow:
         uow.address_repo.add(entry)
