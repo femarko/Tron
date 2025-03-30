@@ -29,3 +29,10 @@ def get_address_info(
     }
     id = app_manager.save_address_info(data=cast(dict, {"address": addr, **addr_info}), uow=unit_of_work.UnitOfWork())
     return {"id": id, **addr_info}
+
+
+@app.get("/get_info_from_db")
+def get_info_from_db(
+        number: int = 10, page: int = 1, per_page: int = 10
+) -> dict[str, int | list[dict[str, str |int | Decimal]]]:
+    return app_manager.get_info_from_db(number=number, page=page, per_page=per_page, uow=unit_of_work.UnitOfWork())

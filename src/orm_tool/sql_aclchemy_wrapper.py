@@ -4,6 +4,7 @@ import dotenv
 
 from sqlalchemy import create_engine, orm, Table, Column, Integer, String, DECIMAL,DateTime, func
 from sqlalchemy.exc import IntegrityError
+from functools import lru_cache
 
 from src.domain.models import AddressBank
 
@@ -40,6 +41,7 @@ class ORMConf:
     session_maker = session_maker
 
     @staticmethod
+    @lru_cache
     def start_mapping():
         table_mapper.map_imperatively(class_=AddressBank, local_table=address_bank_table)
 
