@@ -7,7 +7,8 @@ class AddressBank:
             self,
             address: str,
             balance: int,
-            available_energy: int,
+            energy: int,
+            bandwidth: int,
             create_time: datetime,
             id: Optional[int] = None,
             save_date: Optional[datetime] = None
@@ -15,7 +16,8 @@ class AddressBank:
         self.id = id
         self.address = address
         self.balance = balance
-        self.available_energy = available_energy
+        self.energy = energy
+        self.bandwidth = bandwidth
         self.create_time = create_time
         self.save_date = save_date
 

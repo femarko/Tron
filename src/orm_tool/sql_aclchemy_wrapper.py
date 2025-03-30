@@ -26,7 +26,8 @@ address_bank_table = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("address", String(200), index=True, nullable=False),
     Column("balance", DECIMAL, index=True, nullable=False),
-    Column("available_ energy", String(200), index=True, nullable=False),
+    Column("energy", Integer, index=True, nullable=False),
+    Column("bandwidth", Integer, index=True, nullable=False),
     Column("create_time", DateTime, nullable=False),
     Column("save_date", DateTime, server_default=func.now(), nullable=False)
 )
@@ -44,6 +45,9 @@ class ORMConf:
 
     def create_tables(self):
         table_mapper.metadata.create_all(bind=self.engine)
+
+    def drop_tables(self):
+        table_mapper.metadata.drop_all(bind=self.engine)
 
 
 orm_conf = ORMConf()
