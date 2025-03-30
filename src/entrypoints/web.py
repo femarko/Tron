@@ -8,8 +8,7 @@ from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 from src.service_layer import app_manager, unit_of_work
 
 
-app = fastapi.FastAPI()
-orm_conf.start_mapping()
+app = fastapi.FastAPI(dependencies=[Depends(orm_conf.start_mapping)])
 
 
 @app.post("/address_info")
