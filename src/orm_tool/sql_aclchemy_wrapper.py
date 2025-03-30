@@ -28,7 +28,7 @@ address_bank_table = Table(
     Column("balance", DECIMAL, index=True, nullable=False),
     Column("energy", Integer, index=True, nullable=False),
     Column("bandwidth", Integer, index=True, nullable=False),
-    Column("create_time", DateTime, nullable=False),
+    # Column("create_time", DateTime, nullable=False),
     Column("save_date", DateTime, server_default=func.now(), nullable=False)
 )
 

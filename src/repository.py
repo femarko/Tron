@@ -1,6 +1,6 @@
 from typing import Any, Protocol
 
-from src.domain import AddressBank
+from src.domain.models import AddressBank
 
 
 class NotFoundError(Exception):

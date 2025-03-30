@@ -9,7 +9,7 @@ class AddressBank:
             balance: int,
             energy: int,
             bandwidth: int,
-            create_time: datetime,
+            # create_time: datetime,
             id: Optional[int] = None,
             save_date: Optional[datetime] = None
     ) -> None:
@@ -18,7 +18,7 @@ class AddressBank:
         self.balance = balance
         self.energy = energy
         self.bandwidth = bandwidth
-        self.create_time = create_time
+        # self.create_time = create_time
         self.save_date = save_date
 
 
