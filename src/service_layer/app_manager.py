@@ -19,3 +19,8 @@ def save_address_info(data: dict[str, str | int | Decimal], uow: UnitOfWork) -> 
         uow.address_repo.add(entry)
         uow.commit()
         return entry.id
+
+def get_info_from_db(number: int, page: int, per_page: int, uow: UnitOfWork) -> dict[str, int | Decimal]:
+    with uow:
+        result = uow.address_repo.get_recent(number=number, page=page, per_page=per_page)
+    return result

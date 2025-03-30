@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from typing import Optional
 
 
@@ -24,3 +25,13 @@ class AddressBank:
 
 def create_addrbank_entry(**data) -> AddressBank:
     return AddressBank(**data)
+
+def get_params(model: AddressBank) -> dict[str, str | int | Decimal]:
+    return {
+        "id": model.id,
+        "address": model.address,
+        "balance": model.balance,
+        "energy": model.energy,
+        "bandwidth": model.bandwidth
+    }
+
