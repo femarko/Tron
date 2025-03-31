@@ -34,11 +34,11 @@ class Repository:
     def get(self, instance_id: int) -> Any:
         return self.session.get(self.model_cl, instance_id)
 
-    def get_recent(self, number, page, per_page) -> Any:
-        query_object = self.session.query(self.model_cl).order_by(desc(self.model_cl.save_date))
+    def get_recent(self, number: int, page: int, per_page: int) -> Any:
+        query_object = self.session.query(self.model_cl).order_by(desc(self.model_cl.save_date)).limit(number)
         offset = (page - 1) * per_page
         total: int = query_object.count()
-        model_instances: list = query_object.offset(offset).limit(per_page).limit(number).all()
+        model_instances: list = query_object.offset(offset).limit(per_page).all()
         paginated_data: dict[str, int | list[dict[str, str | int]]] = {
             "page": page,
             "per_page": per_page,
