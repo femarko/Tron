@@ -18,7 +18,7 @@ class Addr(BaseModel):
 
 @app.post("/address_info")
 def get_address_info(
-        addr: Addr,#str = fastapi.Body(..., embed=True),
+        addr: Addr,
 ) -> dict[str, int | Decimal]:
     addr_info: dict[str, int | Decimal] = {
         "balance": app_manager.get_balance(addr=addr.addr),
