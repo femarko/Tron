@@ -19,7 +19,7 @@ class RepoProto(Protocol):
     def delete(self, instance) -> None:
         pass
 
-    def get_recent(self, number, page, per_page):
+    def get_recent(self, number, page, per_page) -> dict:
         pass
 
 
@@ -34,7 +34,7 @@ class Repository:
     def get(self, instance_id: int) -> Any:
         return self.session.get(self.model_cl, instance_id)
 
-    def get_recent(self, number: int, page: int, per_page: int) -> Any:
+    def get_recent(self, number: int, page: int, per_page: int) -> dict[str, int | list[dict[str, str | int]]]:
         query_object = self.session.query(self.model_cl).order_by(desc(self.model_cl.save_date)).limit(number)
         offset = (page - 1) * per_page
         total: int = query_object.count()
