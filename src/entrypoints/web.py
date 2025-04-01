@@ -25,7 +25,9 @@ def get_address_info(
         "energy": app_manager.get_energy_and_bandwidth(addr=addr.addr).get("energy"),
         "bandwidth": app_manager.get_energy_and_bandwidth(addr=addr.addr).get("bandwidth")
     }
-    id = app_manager.save_address_info(data=cast(dict, {"address": addr.addr, **addr_info}), uow=unit_of_work.UnitOfWork())
+    id = app_manager.save_address_info(
+        data=cast(dict, {"address": addr.addr, **addr_info}), uow=unit_of_work.UnitOfWork()
+    )
     return {"id": id, **addr_info}
 
 
