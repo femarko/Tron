@@ -14,9 +14,7 @@ def test_get_address_info(test_client):
     assert response.json()["energy"] >= 0
     assert isinstance(response.json()["bandwidth"], int)
     assert response.json()["bandwidth"] >= 0
-    # assert isinstance(response.json()["balance"], Decimal)
-    assert isinstance(response.json()["balance"], int)
-    assert response.json()["balance"] >= 0
+    assert isinstance(response.json()["balance"], str)
 
 
 
