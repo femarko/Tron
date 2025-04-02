@@ -1,5 +1,6 @@
 venv_tron/
 .env
+.test.env
 __pycache__/
 .idea/
 task.txt

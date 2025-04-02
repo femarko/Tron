@@ -7,17 +7,16 @@ from sqlalchemy.exc import IntegrityError
 from functools import lru_cache
 
 from src.domain.models import AddressBank
+from src.config import settings
 
 
-dotenv.load_dotenv()
+# POSTGRES_DSN = f"postgresql://{os.getenv('POSTGRES_USER')}:"\
+#                f"{os.getenv('POSTGRES_PASSWORD')}@"\
+#                f"{os.getenv('POSTGRES_HOST', 'localhost')}:"\
+#                f"{os.getenv('POSTGRES_PORT')}/"\
+#                f"{os.getenv('POSTGRES_DB')}"
 
-POSTGRES_DSN = f"postgresql://{os.getenv('POSTGRES_USER')}:"\
-               f"{os.getenv('POSTGRES_PASSWORD')}@"\
-               f"{os.getenv('POSTGRES_HOST', 'localhost')}:"\
-               f"{os.getenv('POSTGRES_PORT')}/"\
-               f"{os.getenv('POSTGRES_DB')}"
-
-engine = create_engine(POSTGRES_DSN)
+engine = create_engine(settings.db_url)
 session_maker = orm.sessionmaker(bind=engine)
 table_mapper = orm.registry()
 

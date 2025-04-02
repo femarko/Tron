@@ -26,7 +26,8 @@ def get_address_info(
         "bandwidth": app_manager.get_energy_and_bandwidth(addr=addr.addr).get("bandwidth")
     }
     id = app_manager.save_address_info(
-        data=cast(dict, {"address": addr.addr, **addr_info}), uow=unit_of_work.UnitOfWork()
+        data=cast(dict, {"address": addr.addr, **addr_info}),
+        uow=unit_of_work.UnitOfWork(session_maker=orm_conf.session_maker)
     )
     return {"id": id, **addr_info}
 
@@ -35,4 +36,6 @@ def get_address_info(
 def get_info_from_db(
         number: int = 10, page: int = 1, per_page: int = 10
 ) -> dict[str, int | list[dict[str, str |int | Decimal]]]:
-    return app_manager.get_info_from_db(number=number, page=page, per_page=per_page, uow=unit_of_work.UnitOfWork())
+    return app_manager.get_info_from_db(
+        number=number, page=page, per_page=per_page, uow=unit_of_work.UnitOfWork(session_maker=orm_conf.session_maker)
+    )
