@@ -1,6 +1,4 @@
 import dataclasses
-import os
-import dotenv
 
 from sqlalchemy import create_engine, orm, Table, Column, Integer, String, DECIMAL,DateTime, func
 from sqlalchemy.exc import IntegrityError
@@ -9,12 +7,6 @@ from functools import lru_cache
 from src.domain.models import AddressBank
 from src.config import settings
 
-
-# POSTGRES_DSN = f"postgresql://{os.getenv('POSTGRES_USER')}:"\
-#                f"{os.getenv('POSTGRES_PASSWORD')}@"\
-#                f"{os.getenv('POSTGRES_HOST', 'localhost')}:"\
-#                f"{os.getenv('POSTGRES_PORT')}/"\
-#                f"{os.getenv('POSTGRES_DB')}"
 
 engine = create_engine(settings.db_url)
 session_maker = orm.sessionmaker(bind=engine)
