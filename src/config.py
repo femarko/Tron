@@ -1,16 +1,17 @@
 import dataclasses
-import pathlib
 import dotenv
+import os
 
-dotenv_path = pathlib.Path(__file__).parent.parent / ".env"
-values = dotenv.dotenv_values(dotenv_path)
-
+dotenv.load_dotenv()
 
 @dataclasses.dataclass
 class Config:
-    db_url = (f"postgresql://{values.get('POSTGRES_USER')}:{values.get('POSTGRES_PASSWORD')}@"
-              f"{values.get('POSTGRES_HOST')}:{values.get('POSTGRES_PORT')}/{values.get('POSTGRES_DB')}")
-    mode = values.get("MODE")
-    tron_network = values.get("TRON_NETWORK")
+    db_url = (f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@"
+              f"{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}")
+    mode = os.getenv("MODE")
+    tron_network = os.getenv("TRON_NETWORK")
+
+
+
 
 settings = Config()
