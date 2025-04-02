@@ -1,15 +1,12 @@
 from typing import Callable
-from sqlalchemy.orm import sessionmaker as sqlalchemy_sessionmaker
-
-from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 
 import src.domain.errors
+from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 from src.repository import AddressRepository, RepoProto
 
 
-
 class UnitOfWork:
-    def __init__(self, session_maker: Callable = sqlalchemy_sessionmaker):
+    def __init__(self, session_maker: Callable = orm_conf.session_maker):
         self.session_maker = session_maker
 
     def __enter__(self):
