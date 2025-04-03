@@ -10,12 +10,17 @@ from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 
 dotenv.load_dotenv()
 
-print(settings.db_url)
 
-def test_create_test_db():
-    orm_conf.start_mapping()
-    orm_conf.drop_tables()
-    orm_conf.create_tables()
+@pytest.fixture(autouse=True, scope="module")
+def test_create_drop_all():
+    if settings.mode == "test":
+        orm_conf.start_mapping()
+        orm_conf.drop_tables()
+        orm_conf.create_tables()
+    yield
+    if settings.mode == "test":
+        orm_conf.drop_tables()
+
 
 def test_get_address_info(test_client):
     response = test_client.post(url="https://127.0.0.1/address_info", json={"addr": os.getenv("ADDRESS")})
@@ -28,12 +33,6 @@ def test_get_address_info(test_client):
     assert isinstance(json_result["balance"], str)
 
 
-# @pytest.mark.parametrize(
-#     "number,page,per_page,total_pages,items",
-#     (
-#         5, 2, 2, 3, [{"id": 1, "address": os.getenv("ADDRESS"), "balance": Decimal("0"), "energy": 0, "bandwidth": 0}]
-#     )
-# )
 def test_get_info_from_db(test_client):
     response = test_client.get(url="https://127.0.0.1/get_info_from_db")
     json_result = response.json()
