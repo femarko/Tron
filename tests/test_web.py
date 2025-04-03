@@ -12,7 +12,7 @@ dotenv.load_dotenv()
 
 
 
-def test_get_address_info(test_client):
+def test_get_address_info(test_client, drop_create_all):
     response = test_client.post(url="https://127.0.0.1/address_info", json={"addr": os.getenv("ADDRESS")})
     json_result = response.json()
     assert response.status_code == 200
@@ -23,7 +23,7 @@ def test_get_address_info(test_client):
     assert isinstance(json_result["balance"], str)
 
 
-def test_get_info_from_db(test_client):
+def test_get_info_from_db(test_client, drop_create_all, insert_fake_data):
     response = test_client.get(url="https://127.0.0.1/get_info_from_db")
     json_result = response.json()
     assert response.status_code == 200

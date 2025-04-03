@@ -1,7 +1,5 @@
 import os
 import dotenv
-import psycopg2
-
 from decimal import Decimal
 
 from src.service_layer.app_manager import (
@@ -12,6 +10,7 @@ from src.service_layer.app_manager import (
 )
 from src.service_layer.unit_of_work import UnitOfWork
 from src.orm_tool.sql_aclchemy_wrapper import orm_conf
+
 
 dotenv.load_dotenv()
 
@@ -33,30 +32,16 @@ def test_get_balance():
     assert result >= 0
 
 
-def test_save_address_info():
-    fake_data = {
-        "address": "fake_address",
-        "balance": 2000,
-        "energy": 300,
-        "bandwidth": 600
-    }
+def test_save_address_info(fake_data, pspg2_connection, drop_create_all):
     result = save_address_info(
         data=fake_data,
         uow=UnitOfWork(session_maker=orm_conf.session_maker)
     )
-    pspg2_conn = psycopg2.connect(
-        host=os.getenv("POSTGRES_HOST"),
-        port=os.getenv("POSTGRES_PORT"),
-        dbname=os.getenv("POSTGRES_DB"),
-        user=os.getenv("POSTGRES_USER"),
-        password=os.getenv("POSTGRES_PASSWORD")
-    )
-    cursor = pspg2_conn.cursor()
-    with cursor as c:
-        c.execute(
-            f"SELECT * FROM address_bank"
-        )
-        fetched_data = c.fetchall()
+    with pspg2_connection:
+        cursor = pspg2_connection.cursor()
+        with cursor:
+            cursor.execute("SELECT * FROM address_bank")
+            fetched_data = cursor.fetchall()
     assert isinstance(result, int)
     assert result > 0
     assert len(fetched_data) == 1
@@ -65,3 +50,19 @@ def test_save_address_info():
     assert fetched_data[0][2] == fake_data["balance"]
     assert fetched_data[0][3] == fake_data["energy"]
     assert fetched_data[0][4] == fake_data["bandwidth"]
+
+
+def test_get_info_from_db(fake_data, pspg2_connection, drop_create_all, insert_fake_data):
+    result = get_info_from_db(uow=UnitOfWork(session_maker=orm_conf.session_maker))
+    assert isinstance(result, dict)
+    assert result["page"] == 1
+    assert result["per_page"] == 5
+    assert result["total"] == 1
+    assert result["total_pages"] == 1
+    assert len(result["items"]) == 1
+    assert isinstance(result["items"][0], dict)
+    assert isinstance(result["items"][0]["id"], int)
+    assert result["items"][0]["address"] == fake_data["address"]
+    assert result["items"][0]["balance"] == fake_data["balance"]
+    assert result["items"][0]["energy"] == fake_data["energy"]
+    assert result["items"][0]["bandwidth"] == fake_data["bandwidth"]

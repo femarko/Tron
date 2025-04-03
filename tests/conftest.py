@@ -1,4 +1,6 @@
 import pytest
+import os
+import psycopg2
 from fastapi.testclient import TestClient
 from sqlalchemy import orm, create_engine
 
@@ -13,8 +15,8 @@ def test_client():
     return TestClient(web.app)
 
 
-@pytest.fixture(autouse=True, scope="session")
-def create_drop_all():
+@pytest.fixture(scope="function")
+def drop_create_all():
     if settings.mode == "test":
         orm_conf.start_mapping()
         orm_conf.drop_tables()
@@ -23,10 +25,35 @@ def create_drop_all():
     if settings.mode == "test":
         orm_conf.drop_tables()
 
+@pytest.fixture
+def fake_data():
+    fake_data = {
+        "address": "fake_address",
+        "balance": 2000,
+        "energy": 300,
+        "bandwidth": 600
+    }
+    return fake_data
 
-# TODO: create fixture, returning tron client with test network "nile"
-# TODO: in tron_interface: make main network the default one
-# TODO: create docker-compose.test.yaml, with test db and .env.test
-# TODO: create .env.test
-# TODO: '''create config, returning different settings depending on mode, passing as an environment variable value -
-#  in order to run the app in test mode for testing it by Swagger UI, but not by Pytests'''
+
+@pytest.fixture
+def pspg2_connection():
+    pspg2_conn = psycopg2.connect(
+        host=os.getenv("POSTGRES_HOST"),
+        port=os.getenv("POSTGRES_PORT"),
+        dbname=os.getenv("POSTGRES_DB"),
+        user=os.getenv("POSTGRES_USER"),
+        password=os.getenv("POSTGRES_PASSWORD")
+    )
+    return pspg2_conn
+
+
+@pytest.fixture
+def insert_fake_data(fake_data, pspg2_connection):
+    with pspg2_connection:
+        cursor = pspg2_connection.cursor()
+        with cursor:
+            cursor.execute(
+                query="INSERT INTO address_bank (address, balance, energy, bandwidth) VALUES (%s, %s, %s, %s)",
+                vars=(fake_data["address"], fake_data["balance"], fake_data["energy"], fake_data["bandwidth"])
+            )
