@@ -11,16 +11,6 @@ from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 dotenv.load_dotenv()
 
 
-@pytest.fixture(autouse=True, scope="module")
-def test_create_drop_all():
-    if settings.mode == "test":
-        orm_conf.start_mapping()
-        orm_conf.drop_tables()
-        orm_conf.create_tables()
-    yield
-    if settings.mode == "test":
-        orm_conf.drop_tables()
-
 
 def test_get_address_info(test_client):
     response = test_client.post(url="https://127.0.0.1/address_info", json={"addr": os.getenv("ADDRESS")})
