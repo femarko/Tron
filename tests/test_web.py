@@ -1,13 +1,21 @@
 import dotenv
 import os
-
+from src.config import settings
 from decimal import Decimal
 
 import pytest
 
 from src.entrypoints import web
+from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 
 dotenv.load_dotenv()
+
+print(settings.db_url)
+
+def test_create_test_db():
+    orm_conf.start_mapping()
+    orm_conf.drop_tables()
+    orm_conf.create_tables()
 
 def test_get_address_info(test_client):
     response = test_client.post(url="https://127.0.0.1/address_info", json={"addr": os.getenv("ADDRESS")})

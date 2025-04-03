@@ -1,11 +1,19 @@
 import pytest
+import subprocess
 from fastapi.testclient import TestClient
 from sqlalchemy import orm, create_engine
 
 from src.entrypoints import web
-from src.orm_tool.sql_aclchemy_wrapper import session_maker
 from src.service_layer.unit_of_work import UnitOfWork
-from src.config import load_config
+
+
+# @pytest.fixture(autouse=True, scope="session")
+# def set_test_db():
+#     command = ["docker-compose", "-f", "docker-compose.test.yaml up", "-d"]
+#     subprocess.run(command, shell=True)
+#     yield
+#     command = ["docker-compose", "-f", "docker-compose.test.yaml down"]
+#     subprocess.run(command, shell=True)
 
 
 @pytest.fixture

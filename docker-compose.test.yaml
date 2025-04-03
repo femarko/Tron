@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+
+  test_db:
+    image: postgres:14.3-alpine3.15
+    ports:
+      - "5434:5432"
+    env_file:
+      - tests/.env.test
+
+#  pg_admin:
+#    image: dpage/pgadmin4:latest
+#    ports:
+#      - "50501:80"
+#    depends_on:
+#      - db
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: "0.5"
+#          memory: 2G
+#    env_file:
+#      - .env.test
