@@ -1,6 +1,7 @@
 venv_tron/
 .env
 .test.env
+.env.dev
 tests/.env.test
 __pycache__/
 .idea/
