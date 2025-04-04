@@ -1,0 +1,12 @@
+venv_tron/
+.env
+.gitignore
+client.py
+docker-compose.test.yaml
+docker-compose.yaml
+exper.py
+README.md
+tests/.env.test
+__pycache__/
+.idea/
+

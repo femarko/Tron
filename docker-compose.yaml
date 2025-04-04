@@ -2,12 +2,29 @@ version: "3.9"
 
 services:
 
+  tron_app:
+      build: .
+      env_file:
+        - .env
+      command:
+        bash -c "python3 -m src.create_db && python3 -m src.entrypoints.web"
+      depends_on:
+        db:
+          condition: service_healthy
+      ports:
+        - "8000:8000"
+
   db:
     image: postgres:14.3-alpine3.15
-    ports:
-      - "5431:5432"
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
 
   pg_admin:
     image: dpage/pgadmin4:latest
