@@ -4,6 +4,9 @@ from typing import Optional
 
 import tronpy
 
+from src.config import settings
+
+
 class TronNetwork(str, Enum):
     SHASTA = "shasta"
     NILE = "nile"
@@ -25,5 +28,7 @@ class TronClient:
         return self.client.get_account_balance(addr=addr)
 
 
-def create_tron_client(network: Optional[TronNetwork] = TronNetwork.NILE) -> TronClient:
-    return TronClient(network=network)
+def create_tron_client(network: Optional[TronNetwork]) -> TronClient:
+    if settings.mode in {"test", "dev"}:
+        return TronClient(network=TronNetwork.NILE)
+    return TronClient()
