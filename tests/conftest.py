@@ -4,7 +4,7 @@ import psycopg2
 from fastapi.testclient import TestClient
 from sqlalchemy import orm, create_engine
 
-from src.entrypoints import web
+from src.entrypoints.fastapi_app import main
 from src.service_layer.unit_of_work import UnitOfWork
 from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 from src.config import settings
@@ -12,7 +12,7 @@ from src.config import settings
 
 @pytest.fixture
 def test_client():
-    return TestClient(web.app)
+    return TestClient(main.app)
 
 
 @pytest.fixture(scope="function")

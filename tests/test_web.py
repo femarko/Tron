@@ -1,12 +1,6 @@
 import dotenv
 import os
-from src.config import settings
-from decimal import Decimal
 
-import pytest
-
-from src.entrypoints import web
-from src.orm_tool.sql_aclchemy_wrapper import orm_conf
 
 dotenv.load_dotenv()
 

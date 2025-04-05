@@ -13,8 +13,11 @@ class TronNetwork(str, Enum):
 
 
 class TronClient:
-    def __init__(self, network: Optional[TronNetwork] = TronNetwork.NILE) -> None:
-        self.client = tronpy.Tron(network=network)
+    def __init__(self, network: Optional[TronNetwork] = None) -> None:
+        if network:
+            self.client = tronpy.Tron(network=network)
+        else:
+            self.client = tronpy.Tron()
 
     def get_energy_and_bandwidth(self, addr: str) -> dict[str, int]:
         resources = self.client.get_account_resource(addr=addr)
@@ -28,7 +31,7 @@ class TronClient:
         return self.client.get_account_balance(addr=addr)
 
 
-def create_tron_client(network: Optional[TronNetwork]) -> TronClient:
+def create_tron_client(network: Optional[TronNetwork] = None) -> TronClient:
     if settings.mode in {"test", "dev"}:
-        return TronClient(network=TronNetwork.NILE)
+        return TronClient(network=network)
     return TronClient()

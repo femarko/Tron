@@ -1,6 +1,7 @@
 venv_tron/
 .env
 .env.dev
+.env.prod
 .gitignore
 client.py
 docker-compose.test.yaml
@@ -8,6 +9,6 @@ docker-compose.yaml
 exper.py
 README.md
 tests/.env.test
-__pycache__/
+*__pycache__/
 .idea/
 

@@ -2,8 +2,9 @@ venv_tron/
 .env
 .test.env
 .env.dev
+.env.prod
 tests/.env.test
-__pycache__/
+*__pycache__/
 .idea/
 task.txt
 exper.py
