@@ -1,8 +1,8 @@
+import tronpy
+
 from decimal import Decimal
 from enum import Enum
 from typing import Optional
-
-import tronpy
 
 from src.config import settings
 

@@ -1,8 +1,9 @@
 from typing import Callable
 
 import src.domain.errors
-from src.orm_tool.sql_aclchemy_wrapper import orm_conf
-from src.repository import AddressRepository, RepoProto
+from src.infrastructure.orm.sql_aclchemy_wrapper import orm_conf
+from src.infrastructure.orm.repo_impl import AddressRepository
+from src.application.protocols import RepoProto
 
 
 class UnitOfWork:

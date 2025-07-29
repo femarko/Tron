@@ -2,11 +2,13 @@ import pytest
 import os
 import psycopg2
 from fastapi.testclient import TestClient
-from sqlalchemy import orm, create_engine
 
-from src.entrypoints.fastapi_app import main
-from src.service_layer.unit_of_work import UnitOfWork
-from src.orm_tool.sql_aclchemy_wrapper import orm_conf
+from src.infrastructure.tron.tron_interface import (
+    TronNetwork,
+    create_tron_client
+)
+from src.interfaces.fastapi_app import main
+from src.infrastructure.orm.sql_aclchemy_wrapper import orm_conf
 from src.config import settings
 
 
@@ -24,6 +26,7 @@ def drop_create_all():
     yield
     if settings.mode == "test":
         orm_conf.drop_tables()
+
 
 @pytest.fixture
 def fake_data():
@@ -57,3 +60,8 @@ def insert_fake_data(fake_data, pspg2_connection):
                 query="INSERT INTO address_bank (address, balance, energy, bandwidth) VALUES (%s, %s, %s, %s)",
                 vars=(fake_data["address"], fake_data["balance"], fake_data["energy"], fake_data["bandwidth"])
             )
+
+
+@pytest.fixture
+def tron_client_nile():
+    return create_tron_client(network=TronNetwork.NILE)

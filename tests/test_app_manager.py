@@ -2,14 +2,14 @@ import os
 import dotenv
 from decimal import Decimal
 
-from src.service_layer.app_manager import (
+from src.application.app_manager import (
     get_energy_and_bandwidth,
     get_balance,
     save_address_info,
     get_info_from_db
 )
-from src.service_layer.unit_of_work import UnitOfWork
-from src.orm_tool.sql_aclchemy_wrapper import orm_conf
+from src.application.unit_of_work import UnitOfWork
+from src.infrastructure.orm.sql_aclchemy_wrapper import orm_conf
 
 
 dotenv.load_dotenv()

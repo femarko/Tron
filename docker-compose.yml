@@ -1,0 +1,125 @@
+version: "3.9"
+
+services:
+
+  prod:
+    build:
+      context: .
+      target: prod
+    container_name: prod
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    command: python3 -m src.interfaces.fastapi_app.main
+    depends_on:
+      prod_db:
+        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+#      interval: 5s
+#      timeout: 2s
+#      retries: 10
+#      start_period: 30s
+
+  prod_db:
+    image: postgres:14.3-alpine3.15
+    env_file:
+      - .env
+    container_name: prod_db
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -h $$POSTGRES_HOST -p $$POSTGRES_PORT -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    restart: unless-stopped
+
+  dev:
+    build:
+      context: .
+      target: dev
+    container_name: dev
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    command: python3 -m src.interfaces.fastapi_app.main
+    depends_on:
+      dev_db:
+        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "--fail", "http://localhost:8000/health"]
+#      interval: 5s
+#      timeout: 2s
+#      retries: 10
+#      start_period: 30s
+    volumes:
+      - .:/app
+
+  dev_db:
+    image: postgres:14.3-alpine3.15
+    env_file:
+      - .env
+    container_name: dev_db
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -h $$POSTGRES_HOST -p $$POSTGRES_PORT -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    restart: unless-stopped
+
+  test:
+    build:
+      context: .
+      target: test
+    container_name: test
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    command: pytest --cov=src -v
+    depends_on:
+      test_db:
+        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "--fail", "http://localhost:8001/health"]
+#      interval: 5s
+#      timeout: 2s
+#      retries: 10
+#      start_period: 30s
+    volumes:
+      - .:/app
+
+  test_db:
+    image: postgres:14.3-alpine3.15
+    env_file:
+      - .env
+    container_name: test_db
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -h $$POSTGRES_HOST -p $$POSTGRES_PORT -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    restart: unless-stopped
+
+  pg_admin:
+      image: dpage/pgadmin4:latest
+      ports:
+        - "5050:80"
+      depends_on:
+        - prod_db
+        - test_db
+        - dev_db
+      deploy:
+        resources:
+          limits:
+            cpus: "0.5"
+            memory: 2G
+      env_file:
+        - .env

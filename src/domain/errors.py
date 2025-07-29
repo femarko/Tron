@@ -15,3 +15,8 @@ class ValidationError(Exception):
 class SmthWentWrong(Exception):
     def __init__(self, message: Optional[str] = None):
         self.message = message
+
+
+class NotFoundError(Exception):
+    def __init__(self, message: Optional[str] = None):
+        self.message = message

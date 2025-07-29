@@ -2,9 +2,9 @@ from fastapi import APIRouter
 from decimal import Decimal
 from typing import cast
 
-from src.entrypoints.fastapi_app.schemas import Addr
-from src.service_layer import app_manager, unit_of_work
-from src.orm_tool.sql_aclchemy_wrapper import orm_conf
+from src.interfaces.fastapi_app.schemas import Addr
+from src.application import app_manager, unit_of_work
+from src.infrastructure.orm.sql_aclchemy_wrapper import orm_conf
 
 
 tron_router = APIRouter()

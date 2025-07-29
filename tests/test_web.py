@@ -5,7 +5,6 @@ import os
 dotenv.load_dotenv()
 
 
-
 def test_get_address_info(test_client, drop_create_all):
     response = test_client.post(url="https://127.0.0.1/address_info", json={"addr": os.getenv("ADDRESS")})
     json_result = response.json()

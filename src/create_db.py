@@ -1,4 +1,4 @@
-from src.orm_tool.sql_aclchemy_wrapper import orm_conf
+from src.infrastructure.orm.sql_aclchemy_wrapper import orm_conf
 
 
 orm_conf.start_mapping()

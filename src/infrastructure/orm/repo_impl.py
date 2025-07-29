@@ -1,26 +1,10 @@
-from typing import Any, Protocol
-
+from typing import Any
 from sqlalchemy import desc
 
-from src.domain.models import AddressBank, get_params
-
-
-class NotFoundError(Exception):
-    pass
-
-
-class RepoProto(Protocol):
-    def add(self, instance) -> None:
-        pass
-
-    def get(self, instance_id: int) -> Any:
-        pass
-
-    def delete(self, instance) -> None:
-        pass
-
-    def get_recent(self, number, page, per_page) -> dict:
-        pass
+from src.domain.models import (
+    AddressBank,
+    get_params
+)
 
 
 class Repository:

@@ -1,6 +1,6 @@
 venv_tron/
 .env
-.test.env
+.env.test
 .env.dev
 .env.prod
 tests/.env.test
