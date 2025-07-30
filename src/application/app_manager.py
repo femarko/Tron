@@ -3,7 +3,7 @@ from decimal import Decimal
 import src.infrastructure.tron.tron_interface as tr
 import src.domain.models as models
 from src.application.unit_of_work import UnitOfWork
-from src.config import settings
+from src.bootstrap.config import settings
 
 
 def get_energy_and_bandwidth(addr: str) -> dict[str, int]:

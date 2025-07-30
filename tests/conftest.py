@@ -9,7 +9,7 @@ from src.infrastructure.tron.tron_interface import (
 )
 from src.interfaces.fastapi_app import main
 from src.infrastructure.orm.sql_aclchemy_wrapper import orm_conf
-from src.config import settings
+from src.bootstrap.config import settings
 
 
 @pytest.fixture

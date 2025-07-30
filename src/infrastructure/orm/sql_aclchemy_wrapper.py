@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from functools import lru_cache
 
 from src.domain.models import AddressBank
-from src.config import settings
+from src.bootstrap.config import settings
 
 
 engine = create_engine(settings.db_url)
@@ -34,12 +34,15 @@ class ORMConf:
     @staticmethod
     @lru_cache
     def start_mapping():
+        print("Start mapping...")
         table_mapper.map_imperatively(class_=AddressBank, local_table=address_bank_table)
 
     def create_tables(self):
+        print("Creating tables...")
         table_mapper.metadata.create_all(bind=self.engine)
 
     def drop_tables(self):
+        print("Dropping tables...")
         table_mapper.metadata.drop_all(bind=self.engine)
 
 

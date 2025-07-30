@@ -1,4 +1,4 @@
-from src.config import Config, settings
+from src.bootstrap.config import Config, settings
 
 
 def test_config_creation():

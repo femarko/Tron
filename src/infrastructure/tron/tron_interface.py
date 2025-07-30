@@ -4,7 +4,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
-from src.config import settings
+from src.bootstrap.config import settings
 
 
 class TronNetwork(str, Enum):
