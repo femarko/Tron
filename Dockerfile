@@ -7,7 +7,7 @@ COPY src/ ./src
 FROM base AS dev
 COPY requirements-dev.txt .
 RUN pip install --no-cache-dir -r requirements-dev.txt
-COPY tests /app
+COPY tests /app/tests
 COPY pytest.ini /app
 
 FROM base AS prod
