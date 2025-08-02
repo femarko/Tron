@@ -1,69 +1,28 @@
-from dataclasses import (
-    dataclass,
-    field
-)
 import os
-from dotenv import load_dotenv
+from typing import Any, Optional
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
-load_dotenv()
-
-
-#
-#
-# env_values = dotenv_values(os.getenv("ENV_FILE", ".env"))
-#
-# @dataclasses.dataclass
-# class Config:
-#     db_url = (f"postgresql://{env_values.get('POSTGRES_USER', dotenv_values('.env.dev').get('POSTGRES_USER'))}:"
-#               f"{env_values.get('POSTGRES_PASSWORD', dotenv_values('.env.dev').get('POSTGRES_PASSWORD'))}@"
-#               f"{env_values.get('POSTGRES_HOST', dotenv_values('.env.dev').get('POSTGRES_HOST'))}:"
-#               f"{env_values.get('POSTGRES_PORT', dotenv_values('.env.dev').get('POSTGRES_PORT'))}/"
-#               f"{env_values.get('POSTGRES_DB', dotenv_values('.env.dev').get('POSTGRES_DB'))}")
-#     mode = env_values.get("MODE", dotenv_values(".env.dev").get("MODE"))
-#
-#
-# settings = Config()
+from src.domain.errors import ConfigError
 
 
-@dataclass
-class Config:
-    """
-    Application configuration holder.
+class Settings(BaseSettings):
 
-    Loads environment variables and assembles a PostgreSQL connection string
-    depending on the current runtime mode. This configuration is meant to be
-    instantiated once at startup and used throughout the application.
+    mode: str = Field(..., validation_alias="MODE")
+    host: str = Field(..., validation_alias="POSTGRES_HOST")
+    port: int = Field(..., validation_alias="POSTGRES_PORT")
+    user: str = Field(..., validation_alias="POSTGRES_USER")
+    password: str = Field(..., validation_alias="POSTGRES_PASSWORD")
+    db: str = Field(..., validation_alias="POSTGRES_DB")
+    db_url: Optional[str] = Field(default=None)
 
-    Attributes
-    ----------
-    mode : str
-        The runtime mode of the application. Can be "prod", "test" or "dev".
-    db_url : str
-        Fully constructed PostgreSQL connection URL.
-    """
-    mode: str = field(default_factory=lambda: os.getenv("MODE", "prod"))
-    db_url: str = field(init=False)
 
-    def __post_init__(self):
-        """
-        Builds the database URL from environment variables after initialization.
-        """
+    def model_post_init(self, __context: Any) -> None:
+        try:
+            self.db_url = f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
+        except AttributeError as e:
+            raise ConfigError(message=f"Missing configuration variable when assembling DB URL: {e}") from e
 
-        user = os.getenv("POSTGRES_USER")
-        password = os.getenv("POSTGRES_PASSWORD")
-        host = os.getenv("POSTGRES_HOST")
-        port = os.getenv("POSTGRES_PORT")
-        database = os.getenv("POSTGRES_DB")
-
-        if not all([user, password, host, port, database]):
-            missing = [name for name, value in [
-                ("POSTGRES_USER", user),
-                ("POSTGRES_PASSWORD", password),
-                ("POSTGRES_HOST", host),
-                ("POSTGRES_PORT", port),
-                ("POSTGRES_DB", database),
-            ] if not value]
-            raise EnvironmentError(f"Missing environment variables: {', '.join(missing)}")
-        self.db_url = f"postgresql://{user}:{password}@{host}:{port}/{database}"
-
-settings = Config()
+    class Config:
+        env_file = f".env.{os.getenv('MODE', 'prod')}"
+        env_file_encoding = "utf-8"
