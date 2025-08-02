@@ -3,7 +3,10 @@ from typing import Any, Optional
 from pydantic_settings import BaseSettings
 from pydantic import Field
 
-from src.domain.errors import ConfigError
+from src.domain.errors import (
+    ConfigError,
+    ValidationError
+)
 
 
 class Settings(BaseSettings):
@@ -26,3 +29,17 @@ class Settings(BaseSettings):
     class Config:
         env_file = f".env.{os.getenv('MODE', 'prod')}"
         env_file_encoding = "utf-8"
+
+
+def get_settings() -> Settings:
+    """
+    Returns the application settings.
+
+    Raises:
+        ConfigError: If the settings could not be loaded.
+    """
+    try:
+        # noinspection PyArgumentList
+        return Settings()
+    except ValidationError as e:
+        raise ConfigError(str(e)) from e
