@@ -20,3 +20,8 @@ class SmthWentWrong(Exception):
 class NotFoundError(Exception):
     def __init__(self, message: Optional[str] = None):
         self.message = message
+
+
+class ConfigError(Exception):
+    def __init__(self, message: Optional[str]):
+        self.messsage = message
