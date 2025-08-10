@@ -4,7 +4,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
-from src.bootstrap.config import settings
+from src.bootstrap.config import get_settings
 
 
 class TronNetwork(str, Enum):
@@ -32,6 +32,6 @@ class TronClient:
 
 
 def create_tron_client(network: Optional[TronNetwork] = None) -> TronClient:
-    if settings.mode in {"test", "dev"}:
+    if get_settings().mode in {"test", "dev"}:
         return TronClient(network=network)
     return TronClient()

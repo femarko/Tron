@@ -1,12 +1,24 @@
 import dataclasses
 
-from sqlalchemy import create_engine, orm, Table, Column, Integer, String, DECIMAL,DateTime, func
+from sqlalchemy import (
+    create_engine,
+    orm,
+    Table,
+    Column,
+    Integer,
+    String,
+    DECIMAL,
+    DateTime,
+    func
+)
 from sqlalchemy.exc import IntegrityError
 from functools import lru_cache
 
 from src.domain.models import AddressBank
-from src.bootstrap.config import settings
+from src.bootstrap.config import get_settings
 
+
+settings = get_settings()
 
 engine = create_engine(settings.db_url)
 session_maker = orm.sessionmaker(bind=engine)

@@ -1,16 +1,23 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import Optional
+from typing import (
+    Optional,
+    TypeVar
+)
 
 
-class AddressBank:
+class DomainModelBase:
+    save_date: Optional[datetime | str]
+
+DomainModel = TypeVar("DomainModel", bound=DomainModelBase)
+
+class AddressBank(DomainModelBase):
     def __init__(
             self,
             address: str,
             balance: int,
             energy: int,
             bandwidth: int,
-            # create_time: datetime,
             id: Optional[int] = None,
             save_date: Optional[datetime] = None
     ) -> None:
@@ -19,7 +26,6 @@ class AddressBank:
         self.balance = balance
         self.energy = energy
         self.bandwidth = bandwidth
-        # self.create_time = create_time
         self.save_date = save_date
 
 
@@ -34,4 +40,3 @@ def get_params(model: AddressBank) -> dict[str, str | int | Decimal]:
         "energy": model.energy,
         "bandwidth": model.bandwidth
     }
-
