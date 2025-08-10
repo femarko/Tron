@@ -19,7 +19,8 @@ class LoadAddressInfoFromTron:
     def execute(self, addr: str,) -> dict[str, int]:
         energy_and_bandwidth: dict[str, int] = self.tron_client.get_energy_and_bandwidth(addr=addr)
         balance: Decimal = self.tron_client.get_balance(addr=addr)
-        addr_info: dict[str, int | Decimal] = {
+        addr_info: dict[str, str | int | Decimal] = {
+            "address": addr,
             "balance": balance,
             "energy": energy_and_bandwidth.get("energy"),
             "bandwidth": energy_and_bandwidth.get("bandwidth")

@@ -26,10 +26,12 @@ class UnitOfWork:
         self.session_maker = session_maker
         self.model_cls = model_cls
         self.repo_creators = repo_creators
+        self._repo = None
 
     def __enter__(self) -> "UoWProto":
         self.session = self.session_maker()
-        self._repo = self.repo_creators.get(self.model_cls, {})
+        repo_creator = self.repo_creators.get(self.model_cls)
+        self._repo = repo_creator(self.session, self.model_cls)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
