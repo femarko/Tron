@@ -3,6 +3,7 @@ venv_tron/
 .env.dev
 .env.prod
 .env.test
+.env.local_dev
 .gitignore
 client.py
 docker-compose.dev.yaml
@@ -15,4 +16,6 @@ exper_1.py
 README.md
 *__pycache__/
 .idea/
+local_dev_run.py
+docker-compose_local_dev.yml
 

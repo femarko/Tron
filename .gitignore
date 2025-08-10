@@ -3,6 +3,7 @@ venv_tron/
 .env.test
 .env.dev
 .env.prod
+.env.local_dev
 tests/.env.test
 *__pycache__/
 .idea/
@@ -10,3 +11,5 @@ task.txt
 exper.py
 exper_1.py
 client.py
+local_dev_run.py
+docker-compose_local_dev.yml
