@@ -1,10 +1,7 @@
 from decimal import Decimal
 from typing import Callable
 
-from src.infrastructure.tron.tron_interface import (
-    TronClient,
-    TronNetwork
-)
+from src.infrastructure.tron.tron_interface import TronClient
 import src.domain.models as models
 from src.application.protocols import UoWProto
 
@@ -16,19 +13,18 @@ class LoadAddressInfoFromTron:
             tron_client_maker: Callable[..., TronClient],
             uow: UoWProto
     ) -> None:
-        self.mode = mode
-        self.tron_client_maker = tron_client_maker
         self.uow = uow
+        self.tron_client = tron_client_maker(mode=mode)
 
     def execute(self, addr: str,) -> dict[str, int]:
-        if self.mode in {"test", "dev"}:
-            tron_client = self.tron_client_maker(network=TronNetwork.NILE)
-            print("NILE")  # todo remove
-        else:
-            tron_client = self.tron_client_maker()
-            print("not NILE")  # todo remove
-        energy_and_bandwidth: dict[str, int] = tron_client.get_energy_and_bandwidth(addr=addr)
-        entry: models.AddressBank = models.create_addrbank_entry(**energy_and_bandwidth)
+        energy_and_bandwidth: dict[str, int] = self.tron_client.get_energy_and_bandwidth(addr=addr)
+        balance: Decimal = self.tron_client.get_balance(addr=addr)
+        addr_info: dict[str, int | Decimal] = {
+            "balance": balance,
+            "energy": energy_and_bandwidth.get("energy"),
+            "bandwidth": energy_and_bandwidth.get("bandwidth")
+        }
+        entry: models.AddressBank = models.create_addrbank_entry(**addr_info)
         with self.uow:
             self.uow.repo.add(entry)
             self.uow.flush()
@@ -36,7 +32,7 @@ class LoadAddressInfoFromTron:
             self.uow.commit()
             return {
                 "id": new_entry_id,
-                **energy_and_bandwidth
+                **addr_info
             }
 
 
@@ -58,29 +54,3 @@ class RetrieveAddressInfoFromDB:
             page=page,
             per_page=per_page
         )
-
-
-# def get_energy_and_bandwidth(addr: str) -> dict[str, int]:
-#     if settings.mode in {"test", "dev"}:
-#         return tr.create_tron_client(network=tr.TronNetwork.NILE).get_energy_and_bandwidth(addr=addr)
-#     return tr.create_tron_client().get_energy_and_bandwidth(addr=addr)
-#
-# def get_balance(addr: str) -> Decimal:
-#     if settings.mode in {"test", "dev"}:
-#         return tr.create_tron_client(network=tr.TronNetwork.NILE).get_balance(addr=addr)
-#     return tr.create_tron_client().get_balance(addr=addr)
-#
-# def save_address_info(data: dict[str, str | int | Decimal], uow: UnitOfWork) -> int:
-#     entry = models.create_addrbank_entry(**data)
-#     with uow:
-#         uow.address_repo.add(entry)
-#         uow.commit()
-#         return entry.id
-#
-# def get_info_from_db(uow: UnitOfWork,
-#                      number: int = 20,
-#                      page: int = 1,
-#                      per_page: int = 5) -> dict[str, int | list[dict[str, str | int | Decimal]]]:
-#     with uow:
-#         result = uow.address_repo.get_recent(number=number, page=page, per_page=per_page)
-#     return result

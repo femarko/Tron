@@ -31,7 +31,8 @@ class TronClient:
         return self.client.get_account_balance(addr=addr)
 
 
-def create_tron_client(network: Optional[TronNetwork] = None) -> TronClient:
-    if get_settings().mode in {"test", "dev"}:
-        return TronClient(network=network)
+def create_tron_client(mode: str) -> TronClient:
+    if mode in {"test", "dev"}:
+        print(f"From create_tron_client: {get_settings().mode = }")  # todo: remove
+        return TronClient(network=TronNetwork.NILE)
     return TronClient()
