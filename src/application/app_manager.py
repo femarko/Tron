@@ -50,8 +50,8 @@ class RetrieveAddressInfoFromDB:
             page: int = 1,
             per_page: int = 5
     ) -> dict[str, int | list[dict[str, str | int | Decimal]]]:
-        return self.uow.repo.get_recent(
-            number=number,
-            page=page,
-            per_page=per_page
-        )
+        with self.uow:
+            result: dict[str, int | list[dict[str, str | int | Decimal]]] = self.uow.repo.get_recent(
+                number=number, page=page, per_page=per_page
+            )
+        return result
