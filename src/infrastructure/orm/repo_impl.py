@@ -1,18 +1,14 @@
 from typing import (
     Type,
-    Generic,
-    TypeVar, Protocol
 )
 from sqlalchemy import desc
 
 from src.domain.models import (
     AddressBank,
     get_params,
-    DomainModelBase
 )
 from src.application.protocols import (
     SessionProto,
-    AddressBankRepoProto
 )
 
 
