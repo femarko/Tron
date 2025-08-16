@@ -1,16 +1,21 @@
 from decimal import Decimal
 from typing import Callable
 
-from src.infrastructure.tron.tron_interface import TronClient
-import src.domain.models as models
-from src.application.protocols import UoWProto
+from src.application.protocols import (
+    TronClientProto,
+    UoWProto
+)
+from src.domain.models import (
+    AddressBank,
+    create_addrbank_entry
+)
 
 
 class LoadAddressInfoFromTron:
     def __init__(
             self,
             mode: str,
-            tron_client_maker: Callable[..., TronClient],
+            tron_client_maker: Callable[..., TronClientProto],
             uow: UoWProto
     ) -> None:
         self.uow = uow
@@ -25,7 +30,7 @@ class LoadAddressInfoFromTron:
             "energy": energy_and_bandwidth.get("energy"),
             "bandwidth": energy_and_bandwidth.get("bandwidth")
         }
-        entry: models.AddressBank = models.create_addrbank_entry(**addr_info)
+        entry: AddressBank = create_addrbank_entry(**addr_info)
         with self.uow:
             self.uow.repo.add(entry)
             self.uow.flush()

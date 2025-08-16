@@ -26,6 +26,12 @@ class ConfigError(Exception):
     def __init__(self, message: Optional[str]):
         self.messsage = message
 
+
 class RepoError(Exception):
+    def __init__(self, message: Optional[str]):
+        self.messsage = message
+
+
+class DBError(Exception):
     def __init__(self, message: Optional[str]):
         self.messsage = message

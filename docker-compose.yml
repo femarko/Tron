@@ -49,7 +49,7 @@ services:
       - sh
       - -c
       - |
-        python3 -m src.infrastructure.create_db && 
+        python3 -m src.interfaces.cli.reset_db && 
         uvicorn src.interfaces.fastapi_app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       dev_db:

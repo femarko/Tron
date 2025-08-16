@@ -1,11 +1,7 @@
 from dataclasses import dataclass
 from typing import (
-    Callable,
-    TypeVar,
-    Type,
     Generic
 )
-
 from src.bootstrap.config import (
     get_settings,
     Settings
@@ -17,7 +13,8 @@ from src.infrastructure.tron.tron_interface import (
     TronClient
 )
 from src.infrastructure.orm.sql_aclchemy_wrapper import ORMConf
-from src.application.protocols import AddressBankRepoProto
+from src.infrastructure.reset_db import DBResetter
+# from src.application.protocols import AddressBankRepoProto
 from src.application.unit_of_work import UnitOfWork
 from src.application.app_manager import (
     LoadAddressInfoFromTron,
@@ -37,16 +34,19 @@ class Container(Generic[DomainModel]):
     uow: UnitOfWork
     load_address_info_from_tron_use_case: LoadAddressInfoFromTron
     retrieve_address_info_from_db_use_case: RetrieveAddressInfoFromDB
+    db_resetter: DBResetter
 
 def build_container():
     settings = get_settings()
     tron_client_maker = create_tron_client
-    orm_conf = ORMConf()
-    repo_creators = {
-        AddressBank: create_address_repo
-    }
+    orm_conf = ORMConf(
+        _db_url=settings.db_url,
+       _domain_models=[AddressBank]
+    )
+    db_resetter = DBResetter(orm=orm_conf)
+    repo_creators = {AddressBank: create_address_repo}
     uow = UnitOfWork(
-        session_maker=orm_conf.session_maker,
+        orm_tool=orm_conf,
         model_cls=AddressBank,
         repo_creators=repo_creators
     )
@@ -65,5 +65,6 @@ def build_container():
         orm_conf=orm_conf,
         uow = uow,
         load_address_info_from_tron_use_case=load_address_info_from_tron_use_case,
-        retrieve_address_info_from_db_use_case=retrieve_address_info_from_db_use_case
+        retrieve_address_info_from_db_use_case=retrieve_address_info_from_db_use_case,
+        db_resetter=db_resetter
     )

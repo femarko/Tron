@@ -2,6 +2,7 @@ from typing import (
     Type,
 )
 from sqlalchemy import desc
+from sqlalchemy.orm import aliased
 
 from src.domain.models import (
     AddressBank,
@@ -29,9 +30,17 @@ class AddressRepository:
         return self.session.get(model_cls=self.model_cls, instance_id=instance_id)
 
     def get_recent(self, number: int, page: int, per_page: int) -> dict[str, int | list[dict[str, str | int]]]:
-        query_object = self.session.query(self.model_cls).order_by(desc(self.model_cls.save_date)).limit(number)
-        offset = (page - 1) * per_page
-        total: int = query_object.count()
+        limited_subquery = (
+            self.session.query(self.model_cls)
+            .order_by(desc(self.model_cls.save_date))
+            .limit(number)
+            .subquery()
+        )
+        # limited_alias = aliased(self.model_cls, limited_subquery)  # todo: start fronm here
+        offset: int = (page - 1) * per_page
+        # total: int = limited_alias.count()
+        total: int = limited_subquery.count()
+        query_object = self.session.query(self.model_cls)
         model_instances: list[AddressBank] = query_object.offset(offset).limit(per_page).all()
         paginated_data: dict[str, int | list[dict[str, str | int]]] = {
             "page": page,
