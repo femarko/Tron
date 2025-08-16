@@ -21,7 +21,9 @@ class UnitOfWork:
             self,
             orm_tool: ORMProto,
             model_cls: Type[DomainModel],
-            repo_creators: dict[Type[DomainModel], Callable[[SessionProto, Type[DomainModel]], AddressBankRepoProto]]
+            repo_creators: dict[
+                Type[DomainModel], Callable[[SessionProto, ORMProto, Type[DomainModel]], AddressBankRepoProto]
+            ]
     ):
         self.orm = orm_tool
         self.model_cls = model_cls
@@ -31,7 +33,7 @@ class UnitOfWork:
     def __enter__(self) -> "UoWProto":
         self.session: SessionProto = self.orm.start_session()
         repo_creator = self.repo_creators.get(self.model_cls)
-        self._repo = repo_creator(self.session, self.model_cls)
+        self._repo = repo_creator(self.session, self.orm, self.model_cls)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:

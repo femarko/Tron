@@ -1,26 +1,26 @@
 from typing import (
     Type,
 )
-from sqlalchemy import desc
-from sqlalchemy.orm import aliased
-
 from src.domain.models import (
     AddressBank,
     get_params,
 )
 from src.application.protocols import (
     SessionProto,
+    ORMProto
 )
 
 
 class AddressRepository:
     def __init__(
             self,
+            orm: ORMProto,
             session: SessionProto,
             model_cls: Type[AddressBank],
 
     ) -> None:
         self.session = session
+        self.orm = orm
         self.model_cls = model_cls
 
     def add(self, instance: AddressBank) -> None:
@@ -32,14 +32,12 @@ class AddressRepository:
     def get_recent(self, number: int, page: int, per_page: int) -> dict[str, int | list[dict[str, str | int]]]:
         limited_subquery = (
             self.session.query(self.model_cls)
-            .order_by(desc(self.model_cls.save_date))
+            .order_by(self.orm.desc(self.model_cls.save_date))
             .limit(number)
             .subquery()
         )
-        # limited_alias = aliased(self.model_cls, limited_subquery)  # todo: start fronm here
         offset: int = (page - 1) * per_page
-        # total: int = limited_alias.count()
-        total: int = limited_subquery.count()
+        total: int = self.session.query(limited_subquery).count()
         query_object = self.session.query(self.model_cls)
         model_instances: list[AddressBank] = query_object.offset(offset).limit(per_page).all()
         paginated_data: dict[str, int | list[dict[str, str | int]]] = {
@@ -57,6 +55,7 @@ class AddressRepository:
 
 def create_address_repo(
         session: SessionProto,
+        orm: ORMProto,
         model_cls: Type[AddressBank] = AddressBank,
 ) -> AddressRepository:
-    return AddressRepository(session=session, model_cls=model_cls)
+    return AddressRepository(session=session, orm=orm, model_cls=model_cls)

@@ -22,7 +22,7 @@ from sqlalchemy import (
     String,
     DateTime,
     func,
-    desc
+    desc as sa_desc
 )
 from sqlalchemy.orm import (
     aliased,
@@ -53,7 +53,7 @@ class ORMConf(Generic[T]):
     mappings: dict[Type[DomainModelBase], Table] = field(init=False, default_factory=dict)
     query: Any = field(init=False)
     aliased: aliased = field(init=False)
-    desc: desc = field(init=False)
+    desc: sa_desc = field(init=False)
     _mapping_started: bool = field(init=False, default=False)
 
     def __post_init__(self) -> None:
@@ -62,7 +62,7 @@ class ORMConf(Generic[T]):
         self._table_mapper = orm.registry()
         self.query = SQLAlchemyQueryAdapter
         self.aliased = aliased
-        self.desc = desc
+        self.desc = sa_desc
         self._types_mapping = {
             int: Integer,
             Optional[int]: Integer,
