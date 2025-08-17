@@ -1,14 +1,11 @@
 from typing import TypeVar
 from sqlalchemy.orm.query import Query as SQLAlchemyQuery
 
-from src.application.protocols import (
-    ORMProto,
-    QueryProto,
-    SessionProto
-)
+from src.application.protocols import SessionProto
 
 
 T = TypeVar("T")
+
 
 class SQLAlchemyQueryAdapter:
     def __init__(self, sa_query: SQLAlchemyQuery):

@@ -2,7 +2,6 @@ from typing import (
     Type,
     Callable
 )
-
 from src.domain.models import DomainModel
 from src.domain.errors import (
     AlreadyExistsError,
