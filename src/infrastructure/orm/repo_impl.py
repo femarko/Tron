@@ -1,6 +1,6 @@
-from typing import (
-    Type,
-)
+from typing import Type
+from decimal import Decimal
+
 from src.domain.models import (
     AddressBank,
     get_params,
@@ -29,7 +29,12 @@ class AddressRepository:
     def get(self, instance_id: int) -> AddressBank:
         return self.session.get(model_cls=self.model_cls, instance_id=instance_id)
 
-    def get_recent(self, limit_total: int, page: int, per_page: int) -> dict[str, int | list[dict[str, str | int]]]:
+    def get_recent(
+            self,
+            limit_total: int,
+            page: int,
+            per_page: int
+    ) -> dict[str, int | list[dict[str, str | int | Decimal]]]:
         limited_subquery = (
             self.session.query(self.model_cls)
             .order_by(self.orm.desc(self.model_cls.save_date))
@@ -40,7 +45,7 @@ class AddressRepository:
         query_object = self.session.query(limited_subquery)
         total: int = query_object.count()
         model_instances: list[AddressBank] = query_object.offset(offset).limit(per_page).all()
-        paginated_data: dict[str, int | list[dict[str, str | int]]] = {
+        paginated_data: dict[str, int | list[dict[str, str | int | Decimal]]] = {
             "page": page,
             "per_page": per_page,
             "total": total,

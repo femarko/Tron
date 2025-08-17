@@ -12,6 +12,7 @@ from typing import (
     Generic,
     Any
 )
+from decimal import Decimal
 from datetime import datetime
 from sqlalchemy import (
     create_engine,
@@ -65,6 +66,7 @@ class ORMConf(Generic[T]):
         self.desc = sa_desc
         self._types_mapping = {
             int: Integer,
+            Decimal: Integer,
             Optional[int]: Integer,
             str: String,
             datetime: DateTime,
