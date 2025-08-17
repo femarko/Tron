@@ -109,7 +109,7 @@ class ORMConf(Generic[T]):
     def start_session(self) -> SQLAlchemySessionAdapter:
         session = self.session_maker()
         print(f"From start_session: {type(session) = }") # todo: remove
-        return SQLAlchemySessionAdapter(session)
+        return session
 
     def start_mapping(self) -> None:
         """
