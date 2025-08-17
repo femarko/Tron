@@ -29,16 +29,16 @@ class AddressRepository:
     def get(self, instance_id: int) -> AddressBank:
         return self.session.get(model_cls=self.model_cls, instance_id=instance_id)
 
-    def get_recent(self, number: int, page: int, per_page: int) -> dict[str, int | list[dict[str, str | int]]]:
+    def get_recent(self, limit_total: int, page: int, per_page: int) -> dict[str, int | list[dict[str, str | int]]]:
         limited_subquery = (
             self.session.query(self.model_cls)
             .order_by(self.orm.desc(self.model_cls.save_date))
-            .limit(number)
+            .limit(limit_total)
             .subquery()
         )
         offset: int = (page - 1) * per_page
-        total: int = self.session.query(limited_subquery).count()
-        query_object = self.session.query(self.model_cls)
+        query_object = self.session.query(limited_subquery)
+        total: int = query_object.count()
         model_instances: list[AddressBank] = query_object.offset(offset).limit(per_page).all()
         paginated_data: dict[str, int | list[dict[str, str | int]]] = {
             "page": page,
