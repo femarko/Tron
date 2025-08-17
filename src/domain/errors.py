@@ -24,14 +24,14 @@ class NotFoundError(Exception):
 
 class ConfigError(Exception):
     def __init__(self, message: Optional[str]):
-        self.messsage = message
+        self.message = message
 
 
 class RepoError(Exception):
     def __init__(self, message: Optional[str]):
-        self.messsage = message
+        self.message = message
 
 
 class DBError(Exception):
     def __init__(self, message: Optional[str]):
-        self.messsage = message
+        self.message = message
