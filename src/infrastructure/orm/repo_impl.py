@@ -1,4 +1,7 @@
-from typing import Type
+from typing import (
+    Type,
+    Optional
+)
 from decimal import Decimal
 
 from src.domain.models import (
@@ -26,7 +29,7 @@ class AddressRepository:
     def add(self, instance: AddressBank) -> None:
         self.session.add(instance)
 
-    def get(self, instance_id: int) -> AddressBank:
+    def get(self, instance_id: int) -> Optional[AddressBank]:
         return self.session.get(model_cls=self.model_cls, instance_id=instance_id)
 
     def get_recent(
