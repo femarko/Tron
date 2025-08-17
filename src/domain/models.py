@@ -6,7 +6,6 @@ from typing import (
     TypeVar,
     Annotated
 )
-from xmlrpc.client import Fault
 
 
 class DomainModelBase:
