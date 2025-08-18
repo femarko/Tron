@@ -11,15 +11,16 @@ from typing import (
 class DomainModelBase:
     save_date: Optional[datetime | str]
 
+
 DomainModel = TypeVar("DomainModel", bound=DomainModelBase)
 
 
 @dataclass
 class AddressBank(DomainModelBase):
     address: Annotated[str, dict(unique=False), dict(nullable=False)]
-    balance: Annotated[Decimal, dict(unique=False)]
-    energy: Annotated[int, dict(unique=False)]
-    bandwidth: Annotated[int, dict(unique=False)]
+    balance: Annotated[Decimal, dict(unique=False), dict(nullable=True)]
+    energy: Annotated[int, dict(unique=False), dict(nullable=True)]
+    bandwidth: Annotated[int, dict(unique=False), dict(nullable=True)]
     id: Annotated[Optional[int], dict(primary_key=True), dict(autoincrement=True)] = None
     save_date: Annotated[Optional[datetime], dict(nullable=False), dict(server_default=datetime.now)] = None
 
