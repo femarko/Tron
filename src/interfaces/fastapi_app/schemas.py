@@ -12,3 +12,8 @@ class AddressInfo(BaseModel):
     balance: Decimal
     energy: int
     bandwidth: int
+
+
+class FailedRequest(BaseModel):
+    address: str
+    error: str

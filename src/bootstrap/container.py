@@ -8,7 +8,10 @@ from src.bootstrap.config import (
     get_settings,
     Settings
 )
-from src.domain.models import DomainModel
+from src.domain.models import (
+    DomainModel,
+    AddressBank
+)
 from src.infrastructure.orm.repo_impl import create_address_repo
 from src.infrastructure.tron.tron_interface import (
     create_tron_client,
@@ -20,7 +23,6 @@ from src.application.app_manager import (
     LoadAddressInfoFromTron,
     RetrieveAddressInfoFromDB
 )
-from src.domain.models import AddressBank
 from src.application.protocols import (
     AddressBankRepoProto,
     SessionProto,
