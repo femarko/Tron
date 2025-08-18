@@ -60,6 +60,7 @@ class ORMProto(Protocol):
     aliased: Callable[..., Any]
     desc: Callable[..., Any]
     integrity_error: Exception
+    sqlalchemy_error: Exception
 
     def start_session(self) -> SessionProto: ...
     def start_mapping(self) -> None: ...

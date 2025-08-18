@@ -35,3 +35,7 @@ class RepoError(Exception):
 class DBError(Exception):
     def __init__(self, message: Optional[str]):
         self.message = message
+
+class TronError(Exception):
+    def __init__(self, message: Optional[str]):
+        self.message = message

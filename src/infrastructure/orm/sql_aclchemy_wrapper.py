@@ -29,7 +29,10 @@ from sqlalchemy.orm import (
     aliased,
     sessionmaker as sa_session_maker
 )
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import (
+    IntegrityError,
+    SQLAlchemyError
+)
 from sqlalchemy.engine.base import Engine
 
 from src.application.protocols import SessionProto
@@ -49,6 +52,7 @@ class ORMConf(Generic[T]):
     _domain_models: Iterable[T]
     _engine: Engine = field(init=False)
     integrity_error: IntegrityError = IntegrityError
+    sqlalchemy_error: SQLAlchemyError = SQLAlchemyError
     session_maker: Callable[..., SessionProto] = field(init=False)
     _table_mapper: orm.registry = field(init=False)
     mappings: dict[Type[DomainModelBase], Table] = field(init=False, default_factory=dict)

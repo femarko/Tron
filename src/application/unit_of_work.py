@@ -5,7 +5,8 @@ from typing import (
 from src.domain.models import DomainModel
 from src.domain.errors import (
     AlreadyExistsError,
-    RepoError
+    RepoError,
+    DBError
 )
 from src.application.protocols import (
     AddressBankRepoProto,
@@ -36,22 +37,27 @@ class UnitOfWork:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        if exc_type is not None:
-            self.rollback()
+        try:
+            if exc_type is not None:
+                self.rollback()
+        finally:
             self.session.close()
-        self.session.close()
 
     def commit(self) -> None:
         try:
             self.session.commit()
-        except self.orm.integrity_error:
-            raise AlreadyExistsError
+        except self.orm.integrity_error as e:
+            raise AlreadyExistsError from e
+        except self.orm.sqlalchemy_error as e:
+            raise DBError from e
 
     def flush(self) -> None:
         try:
             self.session.flush()
-        except self.orm.integrity_error:
-            raise AlreadyExistsError
+        except self.orm.integrity_error as e:
+            raise AlreadyExistsError from e
+        except self.orm.sqlalchemy_error as e:
+            raise DBError from e
 
     def rollback(self) -> None:
         self.session.rollback()

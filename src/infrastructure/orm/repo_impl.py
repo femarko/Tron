@@ -8,6 +8,10 @@ from src.domain.models import (
     AddressBank,
     get_params,
 )
+from src.domain.errors import (
+    AlreadyExistsError,
+    DBError
+)
 from src.application.protocols import (
     SessionProto,
     ORMProto
@@ -19,18 +23,25 @@ class AddressRepository:
             self,
             orm: ORMProto,
             session: SessionProto,
-            model_cls: Type[AddressBank],
-
+            model_cls: Type[AddressBank]
     ) -> None:
         self.session = session
         self.orm = orm
         self.model_cls = model_cls
 
     def add(self, instance: AddressBank) -> None:
-        self.session.add(instance)
+        try:
+            self.session.add(instance)
+        except self.orm.integrity_error as e:
+            raise AlreadyExistsError from e
+        except self.orm.sqlalchemy_error as e:
+            raise DBError from e
 
     def get(self, instance_id: int) -> Optional[AddressBank]:
-        return self.session.get(model_cls=self.model_cls, instance_id=instance_id)
+        try:
+            return self.session.get(model_cls=self.model_cls, instance_id=instance_id)
+        except self.orm.sqlalchemy_error as e:
+            raise DBError from e
 
     def get_recent(
             self,
@@ -38,14 +49,20 @@ class AddressRepository:
             page: int,
             per_page: int
     ) -> dict[str, int | list[dict[str, str | int | Decimal]]]:
-        limited_subquery = (
-            self.session.query(self.model_cls)
-            .order_by(self.orm.desc(self.model_cls.save_date))
-            .limit(limit_total)
-            .subquery()
-        )
+        try:
+            limited_subquery = (
+                self.session.query(self.model_cls)
+                .order_by(self.orm.desc(self.model_cls.save_date))
+                .limit(limit_total)
+                .subquery()
+            )
+        except self.orm.sqlalchemy_error as e:
+            raise DBError from e
         offset: int = (page - 1) * per_page
-        query_object = self.session.query(limited_subquery)
+        try:
+            query_object = self.session.query(limited_subquery)
+        except self.orm.sqlalchemy_error as e:
+            raise DBError from e
         total: int = query_object.count()
         model_instances: list[AddressBank] = query_object.offset(offset).limit(per_page).all()
         paginated_data: dict[str, int | list[dict[str, str | int | Decimal]]] = {
@@ -58,8 +75,10 @@ class AddressRepository:
         return paginated_data
 
     def delete(self, instance: AddressBank) -> None:
-        self.session.delete(instance)
-
+        try:
+            self.session.delete(instance)
+        except self.orm.sqlalchemy_error as e:
+            raise DBError from e
 
 def create_address_repo(
         session: SessionProto,
