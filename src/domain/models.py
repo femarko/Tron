@@ -16,7 +16,7 @@ DomainModel = TypeVar("DomainModel", bound=DomainModelBase)
 
 @dataclass
 class AddressBank(DomainModelBase):
-    address: Annotated[str, dict(unique=True)]
+    address: Annotated[str, dict(unique=False), dict(nullable=False)]
     balance: Annotated[Decimal, dict(unique=False)]
     energy: Annotated[int, dict(unique=False)]
     bandwidth: Annotated[int, dict(unique=False)]

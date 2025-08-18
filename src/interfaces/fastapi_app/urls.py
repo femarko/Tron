@@ -24,7 +24,7 @@ tron_router = APIRouter()
         }
     }
 )
-def get_address_info(addr: Addr,) -> dict[str, str | int | Decimal]:
+def get_address_info(addr: Addr) -> dict[str, str | int | Decimal]:
     addr_info: dict[str, int | Decimal] = container.load_address_info_from_tron_use_case.execute(addr=addr.addr)
     return addr_info
 
