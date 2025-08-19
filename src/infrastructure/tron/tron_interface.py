@@ -1,56 +1,15 @@
 import tronpy
-from tronpy.exceptions import (
-    BadAddress,
-    BadKey,
-    BadSignature,
-    BadHash,
-    TaposError,
-    UnknownError,
-    TransactionError,
-    TvmError,
-    ValidationError,
-    ApiError,
-    NotFound,
-    AddressNotFound,
-    TransactionNotFound,
-    BlockNotFound,
-    AssetNotFound,
-    DoubleSpending,
-    BugInJavaTron
-)
-
 from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
-from src.bootstrap.config import get_settings
-from src.domain.errors import TronError
+from src.infrastructure.tron.exceptions import tron_exc_mapper
 
 
 class TronNetwork(str, Enum):
     SHASTA = "shasta"
     NILE = "nile"
 
-
-TRON_ERRORS = (
-    BadAddress,
-    BadKey,
-    BadSignature,
-    BadHash,
-    TaposError,
-    UnknownError,
-    TransactionError,
-    TvmError,
-    ValidationError,
-    ApiError,
-    NotFound,
-    AddressNotFound,
-    TransactionNotFound,
-    BlockNotFound,
-    AssetNotFound,
-    DoubleSpending,
-    BugInJavaTron
-)
 
 class TronClient:
     def __init__(self, network: Optional[TronNetwork] = None) -> None:
@@ -67,18 +26,18 @@ class TronClient:
                 resources.get("NetLimit", 0) - resources.get("NetUsed", 0) + resources.get("freeNetLimit", 0), 0
             )
             return {"energy": energy, "bandwidth": bandwidth}
-        except TRON_ERRORS as e:
-            raise TronError(message=str(e)) from e
+        except Exception as e:
+            print(f"From TronClient.get_energy_and_bandwidth - Exception: {e = }")  # todo: remove
+            raise tron_exc_mapper(exc=e) from e
 
     def get_balance(self, addr: str) -> Decimal:
         try:
             return self.client.get_account_balance(addr=addr)
-        except TRON_ERRORS as e:
-            raise TronError(message=str(e)) from e
+        except Exception as e:
+            raise tron_exc_mapper(exc=e) from e
 
 
 def create_tron_client(mode: str) -> TronClient:
     if mode in {"test", "dev"}:
-        print(f"From create_tron_client: {get_settings().mode = }")  # todo: remove
         return TronClient(network=TronNetwork.NILE)
     return TronClient()

@@ -3,8 +3,8 @@ from typing import (
     Callable
 )
 from src.domain.models import DomainModel
-from src.domain.errors import (
-    AlreadyExistsError,
+from src.domain.exceptions import AlreadyExistsError
+from src.infrastructure.exceptions import (
     RepoError,
     DBError
 )
@@ -47,7 +47,7 @@ class UnitOfWork:
         try:
             self.session.commit()
         except self.orm.integrity_error as e:
-            raise AlreadyExistsError from e
+            raise AlreadyExistsError(message=str(e)) from e
         except self.orm.sqlalchemy_error as e:
             raise DBError from e
 

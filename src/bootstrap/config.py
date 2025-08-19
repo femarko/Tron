@@ -3,7 +3,7 @@ from typing import Any, Optional
 from pydantic_settings import BaseSettings
 from pydantic import Field
 
-from src.domain.errors import (
+from src.bootstrap.exceptions import (
     ConfigError,
     ValidationError
 )

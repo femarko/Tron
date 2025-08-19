@@ -5,21 +5,20 @@ from decimal import Decimal
 from src.interfaces.fastapi_app.schemas import Addr
 from src.bootstrap.bootstrap import container
 from src.interfaces.fastapi_app.schemas import (
-    AddressInfo,
+    AddressInfoFromTron,
+    EntriesFromDB,
     FailedRequest
 )
-from src.domain.errors import (
-    DBError,
-    TronError,
-    NotFoundError
-)
+from src.application.exceptions import ApplicationError
+from src.interfaces.fastapi_app.exceptions import app_exception_handler
+
 
 tron_router = APIRouter()
 
 
 @tron_router.post(
-    path="/address_info",
-    response_model=AddressInfo,
+    path="/address_info_from_tron",
+    response_model=AddressInfoFromTron,
     tags=["address_info"],
     summary="Get address info from TRON network",
     description="Obtain balance, energy, and bandwidth from the TRON network "
@@ -27,37 +26,46 @@ tron_router = APIRouter()
     status_code=201,
     responses={
         201: {
-            "model": AddressInfo,
+            "model": AddressInfoFromTron,
             "description": "Address info successfully obtained from the TRON network and respective entry saved in DB."
+        },
+        400: {
+            "model": FailedRequest,
+            "description": "Bad request."
+        },
+        404: {
+            "model": FailedRequest,
+            "description": "Address not found."
         },
         500: {
             "model": FailedRequest,
-            "description": "Unexpected error occurred."
+            "description": "Internal server error."
         }
     }
 )
-def get_address_info(addr: Addr) -> AddressInfo | JSONResponse:
+def get_address_info(addr: Addr) -> AddressInfoFromTron | JSONResponse:
     try:
         addr_info: dict[str, int | Decimal] = container.load_address_info_from_tron_use_case.execute(addr=addr.addr)
-        return AddressInfo(**addr_info)
-    except (DBError, TronError) as e:
-        return JSONResponse(
-            status_code=500,
-            content={"message": str(e)}
-        )
+        return AddressInfoFromTron(**addr_info)
+    except ApplicationError as e:
+        return app_exception_handler(exc=e, address=addr.addr)
 
-@tron_router.get("/get_info_from_db")
-def get_info_from_db(number: int = 20,
-                     page: int = 1,
-                     per_page: int = 5) -> AddressInfo | JSONResponse:
+
+@tron_router.get(
+    path="/recent_records",
+    response_model=EntriesFromDB,
+
+)
+def get_info_from_db(
+        number: int = 20,
+        page: int = 1,
+        per_page: int = 5
+) -> EntriesFromDB | JSONResponse:
     try:
         return container.retrieve_address_info_from_db_use_case.execute(
             number=number,
             page=page,
             per_page=per_page
         )
-    except NotFoundError as e:
-        return JSONResponse(
-            status_code=404,
-            content={"message": str(e)}
-        )
+    except ApplicationError as e:
+        return app_exception_handler(exc=e)

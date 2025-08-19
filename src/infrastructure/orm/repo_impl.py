@@ -8,10 +8,8 @@ from src.domain.models import (
     AddressBank,
     get_params,
 )
-from src.domain.errors import (
-    AlreadyExistsError,
-    DBError
-)
+from src.infrastructure.exceptions import DBError
+from src.domain.exceptions import AlreadyExistsError
 from src.application.protocols import (
     SessionProto,
     ORMProto

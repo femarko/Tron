@@ -37,7 +37,7 @@ from sqlalchemy.engine.base import Engine
 
 from src.application.protocols import SessionProto
 from src.domain.models import DomainModelBase
-from src.domain.errors import DBError
+from src.infrastructure.exceptions import DBError
 from src.infrastructure.orm.adapters import (
     SQLAlchemyQueryAdapter,
     SQLAlchemySessionAdapter
