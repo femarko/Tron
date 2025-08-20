@@ -2,12 +2,14 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from decimal import Decimal
 
-from src.interfaces.fastapi_app.schemas import Addr
+from src.interfaces.fastapi_app.schemas import (
+    Addr,
+    FailedRequestToTron
+)
 from src.bootstrap.bootstrap import container
 from src.interfaces.fastapi_app.schemas import (
     AddressInfoFromTron,
     EntriesFromDB,
-    FailedRequest
 )
 from src.application.exceptions import ApplicationError
 from src.interfaces.fastapi_app.exceptions import app_exception_handler
@@ -30,15 +32,15 @@ tron_router = APIRouter()
             "description": "Address info successfully obtained from the TRON network and respective entry saved in DB."
         },
         400: {
-            "model": FailedRequest,
+            "model": FailedRequestToTron,
             "description": "Bad request."
         },
         404: {
-            "model": FailedRequest,
+            "model": FailedRequestToTron,
             "description": "Address not found."
         },
         500: {
-            "model": FailedRequest,
+            "model": FailedRequestToTron,
             "description": "Internal server error."
         }
     }
@@ -68,4 +70,5 @@ def get_info_from_db(
             per_page=per_page
         )
     except ApplicationError as e:
+        print(f"From urls.get_info_from_db - Exception: {e = }, {str(e.message) = }")  # todo: remove
         return app_exception_handler(exc=e)

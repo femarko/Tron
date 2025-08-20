@@ -22,6 +22,10 @@ class EntriesFromDB(BaseModel):
     items: list[AddressInfoFromTron]
 
 
-class FailedRequest(BaseModel):
+class FailedRequestToTron(BaseModel):
     address: str
+    error: str
+
+
+class FailedRequestToDB(BaseModel):
     error: str

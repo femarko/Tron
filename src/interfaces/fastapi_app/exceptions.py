@@ -4,7 +4,10 @@ from src.application.exceptions import (
     AppExcCodes,
     ApplicationError
 )
-from src.interfaces.fastapi_app.schemas import FailedRequest
+from src.interfaces.fastapi_app.schemas import (
+    FailedRequestToTron,
+    FailedRequestToDB
+)
 
 exception_code_to_http_code = {
     AppExcCodes.BUISINESS_RULE_VIOLATION: 400,
@@ -17,7 +20,12 @@ exception_code_to_http_code = {
 }
 
 def app_exception_handler(exc: ApplicationError, **kwargs) -> JSONResponse:
+    if kwargs.get("address"):
+        return JSONResponse(
+            status_code=exception_code_to_http_code[exc.code],
+            content=FailedRequestToTron(address=kwargs.get("address"), error=exc.message).model_dump()
+        )
     return JSONResponse(
         status_code=exception_code_to_http_code[exc.code],
-        content=FailedRequest(address=kwargs.get("address"), error=exc.message).model_dump()
+        content=FailedRequestToDB(error=exc.message).model_dump()
     )

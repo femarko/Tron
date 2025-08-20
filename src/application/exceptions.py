@@ -53,4 +53,5 @@ def app_exception_mapper(exc: Exception) -> ApplicationError:
         return ApplicationError(message=exc.message, code=AppExcCodes.BAD_REQUEST)
     if isinstance(exc, domain_exceptions.AlreadyExistsError):
         return ApplicationError(message=exc.message, code=AppExcCodes.UNIQUE_CONSTRAINT_VIOLATION)
+    print(f"From app_exception_mapper - Exception: {exc = }, {str(exc) = }")  # todo: remove
     return ApplicationError()

@@ -5,10 +5,7 @@ from src.application.protocols import (
     TronClientProto,
     UoWProto
 )
-from src.domain.models import (
-    AddressBank,
-    create_addrbank_entry
-)
+from src.domain.models import AddressBank
 from src.application.exceptions import app_exception_mapper
 
 
@@ -32,7 +29,7 @@ class LoadAddressInfoFromTron:
                 "energy": energy_and_bandwidth.get("energy"),
                 "bandwidth": energy_and_bandwidth.get("bandwidth")
             }
-            entry: AddressBank = create_addrbank_entry(**addr_info)
+            entry: AddressBank = AddressBank.create(**addr_info)
             with self.uow:
                 self.uow.repo.add(entry)
                 self.uow.flush()

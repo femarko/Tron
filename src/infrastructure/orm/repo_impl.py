@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from src.domain.models import (
     AddressBank,
-    get_params,
+    get_params
 )
 from src.infrastructure.exceptions import DBError
 from src.domain.exceptions import AlreadyExistsError
@@ -63,6 +63,7 @@ class AddressRepository:
             raise DBError from e
         total: int = query_object.count()
         model_instances: list[AddressBank] = query_object.offset(offset).limit(per_page).all()
+        print(f"From get_recent: {type(model_instances[0]) = }") # todo: remove
         paginated_data: dict[str, int | list[dict[str, str | int | Decimal]]] = {
             "page": page,
             "per_page": per_page,
@@ -70,6 +71,7 @@ class AddressRepository:
             "total_pages": (total + per_page - 1) // per_page,
             "items": [get_params(model=model_instance) for model_instance in model_instances]
         }
+
         return paginated_data
 
     def delete(self, instance: AddressBank) -> None:

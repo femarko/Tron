@@ -41,3 +41,13 @@ class BadRequestError(DomainError):
         self.message = message
         self.code = code
 
+
+class UnexpectedParams(DomainError):
+    def __init__(
+            self,
+            message: Optional[str] = None,
+            code: str = "UNEXPECTED_PARAMS"
+    ):
+        self.message = message
+        self.code = code
+
