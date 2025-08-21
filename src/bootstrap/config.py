@@ -10,7 +10,11 @@ from src.bootstrap.exceptions import (
 
 
 class Settings(BaseSettings):
-
+    # model_config = {
+    #     "extra": "allow",
+        # "env_file": f".env.{os.getenv('MODE', 'prod')}",
+        # "env_file_encoding": "utf-8"
+    # }
     mode: str = Field(..., validation_alias="MODE")
     host: str = Field(..., validation_alias="POSTGRES_HOST")
     port: int = Field(..., validation_alias="POSTGRES_PORT")
@@ -29,6 +33,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = f".env.{os.getenv('MODE', 'prod')}"
         env_file_encoding = "utf-8"
+        extra = "allow"
 
 
 def get_settings() -> Settings:

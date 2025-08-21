@@ -99,7 +99,9 @@ services:
 #      retries: 10
 #      start_period: 30s
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./pytest.ini:/app/pytest.ini
 
   test_db:
     image: postgres:14.3-alpine3.15

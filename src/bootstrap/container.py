@@ -19,7 +19,7 @@ from src.infrastructure.tron.tron_interface import (
 from src.infrastructure.orm.sql_aclchemy_wrapper import ORMConf
 from src.infrastructure.reset_db import DBResetter
 from src.application.unit_of_work import UnitOfWork
-from src.application.app_manager import (
+from src.application.use_cases import (
     LoadAddressInfoFromTron,
     RetrieveAddressInfoFromDB
 )
