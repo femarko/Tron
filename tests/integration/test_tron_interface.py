@@ -1,15 +1,15 @@
 import os
 import dotenv
 import tronpy
-
 from decimal import Decimal
 
 from src.infrastructure.tron import tron_interface
 
+
 dotenv.load_dotenv()
 
 def test_create_tron_client():
-    tron_client = tron_interface.create_tron_client()
+    tron_client = tron_interface.create_tron_client(mode="test")
     assert isinstance(tron_client, tron_interface.TronClient)
     assert isinstance(tron_client.client, tronpy.Tron)
 

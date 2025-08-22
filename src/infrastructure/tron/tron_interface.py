@@ -1,9 +1,15 @@
 import tronpy
 from decimal import Decimal
 from enum import Enum
-from typing import Optional
+from typing import (
+    Optional,
+    Type,
+    cast,
+    Callable
+)
 
 from src.infrastructure.tron.exceptions import tron_exc_mapper
+from src.application.protocols import TronToolProto
 
 
 class TronNetwork(str, Enum):
@@ -12,11 +18,14 @@ class TronNetwork(str, Enum):
 
 
 class TronClient:
-    def __init__(self, network: Optional[TronNetwork] = None) -> None:
+    def __init__(
+            self,
+            tron_tool: Callable[..., TronToolProto],
+            network: Optional[TronNetwork] = None) -> None:
         if network:
-            self.client = tronpy.Tron(network=network)
+            self.client = tron_tool(network=network)
         else:
-            self.client = tronpy.Tron()
+            self.client = tron_tool()
 
     def get_energy_and_bandwidth(self, addr: str) -> dict[str, int]:
         try:
@@ -39,5 +48,8 @@ class TronClient:
 
 def create_tron_client(mode: str) -> TronClient:
     if mode in {"test", "dev"}:
-        return TronClient(network=TronNetwork.NILE)
-    return TronClient()
+        return TronClient(
+            tron_tool=cast(Type[TronToolProto], tronpy.Tron),
+            network=TronNetwork.NILE
+        )
+    return TronClient(tron_tool=cast(Type[TronToolProto], tronpy.Tron))
