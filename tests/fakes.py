@@ -5,9 +5,11 @@ from typing import Optional
 from src.application.protocols import (
     TronClientProto,
     AddressBankRepoProto,
-    UoWProto
+    UoWProto,
 )
 from src.domain.models import AddressBank
+from src.infrastructure.tron.tron_interface import TronNetwork
+from src.infrastructure.tron.exceptions import tron_exc_mapper
 
 
 fake_address_info = {
@@ -22,26 +24,34 @@ fake_tron_lib_data = {
     "EnergyUsed": 50,
     "NetLimit": 200,
     "NetUsed": 100,
+    "freeNetLimit": 100,
     "balance": Decimal(2000)
 }
 
+class FakeTronException(Exception):
+    pass
 
-class FakeTronLib:
+fake_tron_exception_types = {"not_found": (FakeTronException,)}
+
+
+class FakeTronLib():
     def __init__(
             self,
             fake_data: dict[str, str | int | Decimal],
             network: Optional[str] = None
     ) -> None:
-        super().__init__()
         self.fake_data = fake_data
-        self.network = network
+        self.network = network if network is not None else TronNetwork.MAINNET
 
     def get_account_resource(self, addr: str) -> dict[str, int]:
+        if addr == "test_exception_raising":
+            raise FakeTronException()
         return {
             "EnergyLimit": self.fake_data.get("EnergyLimit", 0),
             "EnergyUsed": self.fake_data.get("EnergyUsed", 0),
             "NetLimit": self.fake_data.get("NetLimit", 0),
             "NetUsed": self.fake_data.get("NetUsed", 0),
+            "freeNetLimit": self.fake_data.get("freeNetLimit", 0),
         }
 
     def get_account_balance(self, addr: str) -> Decimal:
@@ -106,3 +116,4 @@ class FakeUoW(UoWProto):
     @property
     def repo(self) -> AddressBankRepoProto:
         return FakeRepo(address_info=fake_address_info)
+
