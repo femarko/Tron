@@ -13,3 +13,4 @@ exper_1.py
 client.py
 local_dev_run.py
 docker-compose_local_dev.yml
+.coverage
